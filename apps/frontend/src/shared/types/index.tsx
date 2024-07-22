@@ -1,7 +1,5 @@
-import apiClient from "../api/ApiClient.ts";
+import { apiClient } from "../api/apiClient.ts";
 import "@tanstack/react-table";
-
-export * from "./prettify.ts";
 
 declare global {
 	interface Window {

@@ -29,39 +29,64 @@ const addSorting = (params: GetParams, sorting: Sorting | undefined) => {
 };
 
 class ApiClient {
-	#axios: AxiosInstance;
+	#client: AxiosInstance;
 	#workspaceId: number | null = null;
+	#sessionId: string | null = "";
 
-	constructor() {
-		this.#axios = axios.create({
-			baseURL: import.meta.env.VITE_API_URL,
+	constructor(baseURL: string) {
+		this.#client = axios.create({
+			baseURL,
 			headers: {
 				"Content-Type": "application/json",
 			},
+			withCredentials: true,
 		});
+
+		this.#client.interceptors.request.use(
+			(config) => {
+				const token = `Bearer ${this.#sessionId}`;
+
+				config.headers["Authorization"] = token;
+
+				return config;
+			},
+			(error) => {
+				console.error("API request failed:", error);
+				return Promise.reject(error);
+			}
+		);
+
+		this.#client.interceptors.response.use(
+			(response) => response,
+			(error) => {
+				console.error("API response failed:", error);
+				if (error.response && error.response.status === 401) {
+					console.error("UNAUTH user");
+				}
+				return Promise.reject(error);
+			}
+		);
 	}
 
 	setSessionId(sessionId: string | null) {
-		if (!sessionId) {
-			delete this.#axios.defaults.headers.common["Authorization"];
-			return;
-		}
-		this.#axios.defaults.headers.common["Authorization"] = `Bearer ${sessionId}`;
+		this.#sessionId = sessionId;
 	}
 
 	setWorkspaceId(workspaceId: number) {
 		this.#workspaceId = workspaceId;
 	}
 
-	request = async <T>(
+	protected request = async <T>(
 		method: "GET" | "POST" | "PUT" | "DELETE",
 		endpoint: string,
 		options?: AxiosRequestConfig
 	): Promise<BaseResponse<T>> => {
+		const url = `${endpoint}`;
+
 		try {
-			const res: AxiosResponse<BaseResponse<T>> = await this.#axios({
+			const res: AxiosResponse<BaseResponse<T>> = await this.#client({
 				method,
-				url: `/v1${endpoint}`,
+				url,
 				...options,
 			});
 
@@ -252,4 +277,6 @@ class ApiClient {
 	};
 }
 
-export default new ApiClient();
+const apiClient = new ApiClient(`/api/v1`);
+
+export { apiClient };

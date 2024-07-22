@@ -1,18 +1,11 @@
 import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
-
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
-import express, { NextFunction, Request, Response } from "express";
-
-// import { usersRouter } from "./routers/usersRouter";
-
+import express from "express";
 import { resolveWorkspace } from "./middlewares/resolveWorkspace.js";
 import { version } from "../../package.json";
-
 import {
 	authRouter,
 	clientRouter,
@@ -22,18 +15,13 @@ import {
 	workspaceRouter,
 } from "./routers/index.js";
 import { resolveUser } from "./middlewares/resolveUser.js";
+import { prettyRequestLog } from "./middlewares/prettyRequestLog.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default async (): Promise<void> => {
 	const app = express();
-
-	// Set content type to json for aws sns callback requests to be able to parse body right
-	// TODO: extract to own middleware
-	app.use((req, _res, next) => {
-		if (req.header("x-amz-sns-message-type")) {
-			req.headers["content-type"] = "application/json";
-		}
-		next();
-	});
 
 	app.use(cors());
 	app.use(helmet());
@@ -42,30 +30,21 @@ export default async (): Promise<void> => {
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json({ limit: "50mb" }));
 	app.use(cookieParser());
-
-	app.use((req: Request, res: Response, next: NextFunction) => {
-		console.log(
-			"\u001b[" + 32 + "m" + "---------------NEW REQUEST----------------" + "\u001b[0m",
-		);
-		console.log("\u001b[" + 36 + "m" + `${req.method} url:: ${req.url}` + "\u001b[0m");
-		next();
-	});
+	app.use(prettyRequestLog);
 
 	app.get("/", (_req, res) => {
 		res.send(`timemator-api ${version}`);
 	});
 
-	const apiPrefix = "/v1";
+	const apiPrefix = process.env.API_VERSION;
 
 	app.use(apiPrefix, authRouter);
-
 	app.use(apiPrefix, resolveUser);
 	app.use(apiPrefix, meRouter);
 	app.use(apiPrefix, workspaceRouter);
 
 	const workspacePrefix = `${apiPrefix}/:workspaceId`;
-	app.use(workspacePrefix, resolveWorkspace); // sets req.workspace
-	// app.use(workspacePrefix, usersRouter);
+	app.use(workspacePrefix, resolveWorkspace);
 	app.use(workspacePrefix, projectRouter);
 	app.use(workspacePrefix, clientRouter);
 	app.use(workspacePrefix, nodeRouter);
@@ -74,34 +53,12 @@ export default async (): Promise<void> => {
 	//   app.use(Sentry.Handlers.errorHandler());
 	// }
 
-	// Error handler
-	app.use(function (
-		err: Error,
-		req: express.Request,
-		res: express.Response,
-		next: express.NextFunction,
-	) {
-		console.log("\u001b[" + 31 + "m" + "<=====ERROR=====>" + "\u001b[0m");
-		if (res.headersSent) {
-			return next(err);
-		}
-		console.log(err);
+	app.use(errorHandler);
 
-		if (err) {
-			const anyErr = err as any;
-			const code = anyErr.statusCode || 500;
-			const errorJson = {
-				status: 0,
-				message: err.message || err,
-				responseCode: code,
-				userInfo: anyErr.userInfo,
-				errorFields: anyErr.errorFields,
-			};
-			res.status(code).json(errorJson);
-		}
-	});
+	const host = process.env.API_HOST || "localhost";
+	const port = process.env.API_PORT || 3000;
 
-	app.listen({ host: "127.0.0.1", port: process.env.API_PORT || 3000 }, () => {
-		console.log(`API server listening at http://127.0.0.1:${process.env.API_PORT}`);
+	app.listen({ host, port }, () => {
+		console.log(`API server listening at http://${host}:${process.env.API_PORT}`);
 	});
 };

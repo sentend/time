@@ -5,7 +5,7 @@ import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
-import apiClient from "@/shared/api/ApiClient";
+import { apiClient } from "@/shared/api/apiClient";
 import { useAppStore } from "@/shared/store";
 import {
 	Button,

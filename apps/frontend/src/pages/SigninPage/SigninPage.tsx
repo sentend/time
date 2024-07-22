@@ -3,17 +3,15 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import api from "@/shared/api/ApiClient";
+import { apiClient } from "@/shared/api/apiClient";
 import { useAppStore } from "@/shared/store";
-import { Button, Form, Input, InputField, Text } from "@/shared/ui";
+import { Button, Form, InputField, Text } from "@/shared/ui";
 import useError from "@/shared/hooks/useError";
 import combineInputErrors from "@/shared/utils/combineInputErrors";
-import humanizeInputError from "@/shared/utils/humanizeInputError";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sid } from "@/shared/constants";
-import { useEffect } from "react";
 
 const signinSchema = z.object({
 	email: z.string().min(1).email(),
@@ -36,7 +34,7 @@ export const SigninPage = () => {
 		try {
 			resetError();
 			const { email, password } = values;
-			const res = await api.signIn(email, password);
+			const res = await apiClient.signIn(email, password);
 			if (res.sessionId) {
 				Cookies.set(sid, res.sessionId);
 				await initSession(res.sessionId);

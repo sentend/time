@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import api from "@/shared/api/ApiClient";
+import { apiClient } from "@/shared/api/apiClient";
 import { Button, Form, Input, InputField, Text } from "@/shared/ui";
 import useError from "@/shared/hooks/useError";
 import { humanizeInputError, combineInputErrors } from "@/shared/utils";
@@ -46,7 +46,8 @@ export const SignupPage = () => {
 	const handleSignup = async (values: SignupFormValues) => {
 		resetError();
 		try {
-			const res = await api.signUp(values);
+			const res = await apiClient.signUp(values);
+			console.log(res);
 			if (res.sessionId) {
 				Cookies.set(sid, res.sessionId);
 				await initSession(res.sessionId);
