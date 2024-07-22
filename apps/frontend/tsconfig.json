@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"~types/*": ["../../types/*"]
+		},
+		"esModuleInterop": true,
+		"target": "ES2022",
+		"useDefineForClassFields": true,
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"moduleDetection": "force",
+		"noUncheckedIndexedAccess": true,
+
+		/* Bundler mode */
+		"moduleResolution": "Bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+
+		/* Linting */
+		"strict": true,
+		"strictNullChecks": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"sourceMap": true
+	},
+	// "include": ["src", "../types", "stories", "."],
+	// "exclude": ["../backend"],
+	"references": [{ "path": "./tsconfig.node.json" }]
+}

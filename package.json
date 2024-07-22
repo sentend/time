@@ -1,0 +1,25 @@
+{
+    "name": "monorepo",
+    "private": true,
+    "packageManager": "pnpm@9.0.0",
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint"
+    },
+    "dependencies": {
+        "@paralleldrive/cuid2": "^2.2.2",
+        "@types/qs": "^6.9.8",
+        "dayjs": "^1.11.10",
+        "lodash": "^4.17.21",
+        "qs": "^6.11.2",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.199",
+        "turbo": "latest"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}

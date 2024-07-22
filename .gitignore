@@ -1,0 +1,15 @@
+apps/*/.env
+apps/*/.env.integration
+apps/*/.env.production
+apps/*/.env.staging
+apps/*/.env.integration-test
+apps/*/.env.local-integration-test
+apps/*/dist
+apps/*/yarn-error.log
+apps/*/node_modules
+
+/node_modules
+/yarn.lock
+/backend/yarn.lock
+
+.turbo

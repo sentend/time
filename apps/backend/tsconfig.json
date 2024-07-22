@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "ES6",
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"paths": {
+			"main": ["src/index.ts"],
+			"@/*": ["./src/*"],
+			"~types/*": ["../../types/*"]
+		},
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*", "../../*"]
+}

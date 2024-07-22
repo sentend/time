@@ -1,0 +1,3 @@
+- убрать svg, сдеалть через svg sprites
+- переписать бэк на hono
+- убрать zustand - добавить effector
