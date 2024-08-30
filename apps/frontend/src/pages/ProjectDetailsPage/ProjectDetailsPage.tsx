@@ -1,13 +1,14 @@
 import { useCurrentSegment } from "@/shared/hooks";
 import { TabBar, TabsTrigger } from "@/shared/ui";
-import useProjectsList from "@/widgets/ProjectList/useProjectsList";
+
 import { useTranslation } from "react-i18next";
 import { Outlet, useNavigate, useParams } from "react-router";
 import ProjectDetailsHeader from "./ProjectDetailsHeader";
 import { cn } from "@/shared/utils";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/shared/api";
-import { TProject } from "~types/models";
+import { useProjects } from "@/entities/project";
+import useCurrentWorkspace from "@/shared/hooks/useCurrentWorkspace";
 
 export type ProjectDetailsPageParams = {
 	projectId: string;
@@ -21,6 +22,7 @@ export type ProjectDetailsContext = {
 type Segment = "timeEntries" | "report" | "tasks";
 
 const ProjectDetails = () => {
+	const currentWorkspace = useCurrentWorkspace();
 	const { projectId } = useParams<ProjectDetailsPageParams>();
 	const navigate = useNavigate();
 
@@ -35,10 +37,9 @@ const ProjectDetails = () => {
 		refetchOnWindowFocus: false,
 	});
 
-	const { data: projects } = useProjectsList({
-		options: {
-			enabled: false,
-		},
+	const { data: projects } = useProjects(currentWorkspace.id, {
+		page: 1,
+		size: 10,
 	});
 
 	const segment = useCurrentSegment<Segment>() ?? "tasks";

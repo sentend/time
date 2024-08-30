@@ -85,3 +85,7 @@ export const parseQSToBoolean = (
 
 	return undefined;
 };
+
+export class QueryString {
+	private constructor(params) {}
+}

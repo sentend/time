@@ -2,26 +2,30 @@ import Cookies from "js-cookie";
 import { create } from "zustand";
 import { apiClient } from "@/shared/api";
 import { immer } from "zustand/middleware/immer";
-
-import { TUser, TWorkspace, TUserWorkspaceData } from "~types/models";
 import transformAxiosError from "../utils/transformAxiosError";
 import { AxiosError } from "axios";
 import { sid } from "../constants";
+import type { WorkspaceDTO } from "@/server/workspace";
+import type { WorkspaceMember } from "@/server/workspace-member";
+import type { UserDTO } from "@/server/user";
+import { atom } from "jotai";
 
 type StoreState = {
-	currentUser: TUser | null;
-	userWorkspaceData: TUserWorkspaceData | null;
-	workspaces: TWorkspace[];
-	currentWorkspace: TWorkspace | null;
+	currentUser: UserDTO | null;
+	userWorkspaceData: WorkspaceMember | null;
+	workspaces: WorkspaceDTO[];
+	currentWorkspace: WorkspaceDTO | null;
 	appError: string | null;
 };
 
 type StoreActions = {
 	logout: () => void;
-	getCurrentUser: () => TUser;
+	getCurrentUser: () => UserDTO;
 	initSession: (sessionId: string, lastUsedWorkspaceId?: number) => Promise<void>;
 	updateWorkspaceNextProjectColor: () => number;
 };
+
+export const currentWorkspace = atom;
 
 export const useAppStore = create(
 	immer<StoreState & StoreActions>((set, getState) => ({

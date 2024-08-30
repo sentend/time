@@ -3,7 +3,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
-			"~types/*": ["../../types/*"]
+			"~types/*": ["../../types/*"],
+			"@/server/*": ["../server/src/domains/*"]
 		},
 		"esModuleInterop": true,
 		"target": "ES2022",
@@ -28,8 +29,9 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 		"sourceMap": true
+		// "types": ["../server/src/domains/**"]
 	},
-	// "include": ["src", "../types", "stories", "."],
+
 	// "exclude": ["../backend"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

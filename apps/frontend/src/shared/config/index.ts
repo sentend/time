@@ -1,3 +1,57 @@
+import { atom, getDefaultStore } from "jotai";
+import { apiClient } from "../api";
+import { storage } from "../storage";
+import { UserDTO } from "@/server/user";
+import type { WorkspaceDTO } from "@/server/workspace";
+import { QueryClient } from "@tanstack/react-query";
+
+export const queryClient = new QueryClient();
+
+export const workspacesAtom = atom([]);
+export const workspaceMemberDataAtom = atom(null);
+export const currentWorkspaceAtom = atom<WorkspaceDTO | null>(null);
+export const currentUserAtom = atom<UserDTO | null>(null);
+
+export const isAppStartedAtom = atom(false);
+export const isAppDataLoadingAtom = atom(true);
+
+export const initDataAtom = async (workspaceId?: number) => {
+	try {
+		let effectiveWorkspaceId = undefined;
+		if (workspaceId) {
+			effectiveWorkspaceId = workspaceId;
+		}
+
+		const storagedWorkspaceId = await storage.getItem<string>("wid");
+
+		if (storagedWorkspaceId) {
+			effectiveWorkspaceId = parseInt(storagedWorkspaceId);
+		}
+
+		const data = await apiClient.getMe(effectiveWorkspaceId);
+		const { user, workspaces, currentWorkspace, userWorkspaceData } = data;
+
+		apiClient.setWorkspaceId(currentWorkspace.id);
+		storage.setItem("wid", currentWorkspace.id);
+
+		store.set(currentWorkspaceAtom, currentWorkspace);
+		store.set(workspaceMemberDataAtom, userWorkspaceData);
+		store.set(workspacesAtom, workspaces);
+		store.set(currentUserAtom, user);
+
+		store.set(isAppDataLoadingAtom, false);
+	} catch (err) {
+		console.error("err", err);
+	}
+};
+
+export const store = getDefaultStore();
+
+store.sub(isAppStartedAtom, () => {
+	console.log("app started");
+	initDataAtom();
+});
+
 export type Color = {
 	bg: string;
 	text: string;

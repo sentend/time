@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1698946386048,
+      "tag": "0000_spicy_swarm",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699809926766,
+      "tag": "0001_blue_the_fallen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1700284614901,
+      "tag": "0002_pale_black_bird",
+      "breakpoints": true
+    }
+  ]
+}

@@ -47,7 +47,7 @@ export const SignupPage = () => {
 		resetError();
 		try {
 			const res = await apiClient.signUp(values);
-			console.log(res);
+
 			if (res.sessionId) {
 				Cookies.set(sid, res.sessionId);
 				await initSession(res.sessionId);

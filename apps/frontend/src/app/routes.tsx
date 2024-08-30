@@ -11,9 +11,9 @@ import {
 	ProjectTimeEntriesPage,
 } from "@/pages";
 
-import { MainLayout, AuthLayout } from "./layouts";
+import { MainLayout, AuthLayout } from "@/shared/ui/layout";
 import LocalNavigate from "./LocalNavigate";
-import Root from "./Root";
+import { Root } from "./Root";
 
 export const getRoutes = (children: RouteObject[]): RouteObject[] => {
 	return [

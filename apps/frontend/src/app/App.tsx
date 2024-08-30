@@ -1,34 +1,20 @@
-import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
-
-import { useAppStore } from "@/shared/store";
-
 import { getPrivateRoutes, getPublicRoutes, getRoutes } from "./routes";
-
 import "./styles/index.scss";
-import { sid } from "@/shared/constants";
 import { apiClient } from "@/shared/api";
+import { useAtomValue } from "jotai";
+import { currentUserAtom, currentWorkspaceAtom, isAppDataLoadingAtom } from "@/shared/config";
 
 export const App = () => {
-	const { currentUser, currentWorkspace, initSession } = useAppStore();
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			const sessionId = Cookies.get(sid);
-			if (sessionId) {
-				await initSession(sessionId);
-			}
-			setIsLoading(false);
-		};
-
-		fetchData();
-	}, [initSession]);
+	const currentUser = useAtomValue(currentUserAtom);
+	const currentWorkspace = useAtomValue(currentWorkspaceAtom);
+	console.log("APP");
+	console.log(currentUser, currentWorkspace);
+	const isLoading = useAtomValue(isAppDataLoadingAtom);
 
 	if (isLoading) {
-		return "Loading...";
+		return "loading...";
 	}
 
 	let mainRoutes = getPublicRoutes();
