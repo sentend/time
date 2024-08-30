@@ -2,11 +2,11 @@ import type { BinaryLike } from "crypto";
 import type { ClientConfig } from "pg";
 
 export const databaseCredentials = {
-	database: process.env.DATABASE,
-	host: process.env.HOST,
-	port: Number(process.env.DB_PORT),
-	password: process.env.PASSWORD,
-	user: process.env.USER,
+	database: process.env.DB_NAME!,
+	host: process.env.DB_HOST!,
+	port: Number(process.env.DB_PORT)!,
+	password: process.env.DB_PASSWORD!,
+	user: process.env.DB_USER!,
 	ssl: false,
 } satisfies ClientConfig;
 

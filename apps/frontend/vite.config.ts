@@ -3,8 +3,11 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import svgr from "vite-plugin-svgr";
 
-const DEFAULT_HOST = "localhost";
-const DEFAULT_PORT = "3000";
+const port = Number(process.env.VITE_CLIENT_PORT) || 3030;
+const host = process.env.VITE_CLIENT_HOST || "localhost";
+const serverTraget = process.env.VITE_SERVER_API_URL || "localhost";
+
+console.log(process.env);
 
 console.log(__dirname);
 
@@ -22,12 +25,12 @@ export default ({ mode }) => {
 			}),
 		],
 		server: {
-			host: process.env.VITE_HOST || DEFAULT_HOST,
-			port: parseInt(process.env.VITE_PORT || DEFAULT_PORT),
+			host,
+			port,
 			strictPort: true,
 			proxy: {
 				"/api": {
-					target: `${process.env.VITE_API_URL}`,
+					target: serverTraget,
 					changeOrigin: true,
 					rewrite: (path) => {
 						const fixedPath = path.replace(/^\/api/, "");
