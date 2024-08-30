@@ -12,7 +12,7 @@ import { Rate, rateTable } from "../rate/rate";
 import { Workspace, workspaceTable } from "../workspace/workspace";
 import { InferSelectModel, relations } from "drizzle-orm";
 import { Project, projectTable } from "../project/project";
-import { Node, nodeTable } from "../node/node";
+import { Node, nodeTable } from "../node";
 import { timeEntryTagTable } from "../timeEntry-tag/timeEntryTag";
 
 export const timeEntryTable = pgTable("timeEntry", {

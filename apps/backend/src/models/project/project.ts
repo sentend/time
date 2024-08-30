@@ -10,7 +10,7 @@ import {
 import { Rate, rateTable } from "../rate/rate";
 import { Workspace, workspaceTable } from "../workspace/workspace";
 import { InferSelectModel, eq, relations } from "drizzle-orm";
-import { Node, nodeTable } from "../node/node";
+import { Node, nodeTable } from "../node";
 import { ProjectTag, projectTagTable } from "../project-tag/projectTag";
 import { userTable } from "../user/user";
 import { UserProject, userProjectTable } from "../user-project/userProject";

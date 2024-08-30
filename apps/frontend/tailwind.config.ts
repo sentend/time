@@ -31,7 +31,7 @@ module.exports = {
 				sidebar: "185px",
 			},
 			fontFamily: {
-				sans: ["Inter", ...defaultTheme.fontFamily.sans],
+				sans: ["Inter"],
 			},
 			fontSize: {
 				xs: ["10px", "16px"],

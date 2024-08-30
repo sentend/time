@@ -1,0 +1,22 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ES6",
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"strictFunctionTypes": false,
+		"resolveJsonModule": true,
+		"noImplicitThis": true,
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"skipLibCheck": true,
+		"types": ["node"],
+		"outDir": "./dist",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"~types/*": ["../../types/*"]
+		}
+	}
+}

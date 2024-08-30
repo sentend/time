@@ -59,12 +59,8 @@ import type { TProject } from "~types/models";
 import type { GetProjectsService } from "~types/services";
 
 const memberSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	initials: z.string(),
 	isManager: z.boolean(),
-	createdAt: z.coerce.date().transform((date) => date?.getTime() ?? null),
-	updatedAt: z.coerce.date().transform((date) => date?.getTime() ?? null),
+	userId: z.string(),
 });
 
 const projectSchema = z.object({
@@ -158,7 +154,7 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 			budgetStartDate: null,
 			budgetType: null,
 			budgetValue: null,
-			members: [{ ...currentUser, isManager: true }],
+			members: [{ userId: currentUser.id, isManager: true }],
 		},
 		values: project,
 		resolver: zodResolver(projectSchema),

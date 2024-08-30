@@ -15,21 +15,21 @@ export const App = () => {
 	const { currentUser, currentWorkspace, initSession } = useAppStore();
 	const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const sessionId = Cookies.get(sid);
-			if (sessionId) {
-				await initSession(sessionId);
-			}
-			setIsLoading(false);
-		};
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		const sessionId = Cookies.get(sid);
+	// 		if (sessionId) {
+	// 			await initSession(sessionId);
+	// 		}
+	// 		setIsLoading(false);
+	// 	};
 
-		fetchData();
-	}, [initSession]);
+	// 	fetchData();
+	// }, [initSession]);
 
-	if (isLoading) {
-		return "Loading...";
-	}
+	// if (isLoading) {
+	// 	return "Loading...";
+	// }
 
 	let mainRoutes = getPublicRoutes();
 	if (currentUser && currentWorkspace) {

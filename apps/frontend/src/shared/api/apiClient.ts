@@ -12,29 +12,18 @@ import {
 	SignupServiceResult,
 } from "~types/services";
 import transformAxiosError from "../utils/transformAxiosError";
-import { TCLient, TNode, TProject, TTimeEntry, TUser } from "~types/models";
-
-type Sorting = {
-	by: string;
-	asc: boolean;
-};
-
-type GetParams = Record<string, unknown>;
-
-const addSorting = (params: GetParams, sorting: Sorting | undefined) => {
-	if (sorting) {
-		params.sortBy = sorting.by;
-		params.sortAsc = sorting.asc;
-	}
-};
+import { TCLient, TTimeEntry } from "~types/models";
+import type { UserModel } from "@/server/user";
+import type { NodeModel } from "@/server/node";
+import type { ProjectDTO } from "@/server/project";
 
 class ApiClient {
-	#client: AxiosInstance;
-	#workspaceId: number | null = null;
-	#sessionId: string | null = "";
+	private client: AxiosInstance;
+	private workspaceId: number | null = null;
+	private sessionId: string | null = "";
 
 	constructor(baseURL: string) {
-		this.#client = axios.create({
+		this.client = axios.create({
 			baseURL,
 			headers: {
 				"Content-Type": "application/json",
@@ -42,10 +31,10 @@ class ApiClient {
 			withCredentials: true,
 		});
 
-		this.#client.interceptors.request.use(
+		this.client.interceptors.request.use(
 			(config) => {
-				const token = `Bearer ${this.#sessionId}`;
-
+				const token = `Bearer ${this.sessionId}`;
+				console.log(config.headers["User-Agent"]);
 				config.headers["Authorization"] = token;
 
 				return config;
@@ -56,7 +45,7 @@ class ApiClient {
 			}
 		);
 
-		this.#client.interceptors.response.use(
+		this.client.interceptors.response.use(
 			(response) => response,
 			(error) => {
 				console.error("API response failed:", error);
@@ -69,14 +58,14 @@ class ApiClient {
 	}
 
 	setSessionId(sessionId: string | null) {
-		this.#sessionId = sessionId;
+		this.sessionId = sessionId;
 	}
 
 	setWorkspaceId(workspaceId: number) {
-		this.#workspaceId = workspaceId;
+		this.workspaceId = workspaceId;
 	}
 
-	protected request = async <T>(
+	request = async <T>(
 		method: "GET" | "POST" | "PUT" | "DELETE",
 		endpoint: string,
 		options?: AxiosRequestConfig
@@ -84,7 +73,7 @@ class ApiClient {
 		const url = `${endpoint}`;
 
 		try {
-			const res: AxiosResponse<BaseResponse<T>> = await this.#client({
+			const res: AxiosResponse<BaseResponse<T>> = await this.client({
 				method,
 				url,
 				...options,
@@ -105,12 +94,12 @@ class ApiClient {
 				workspaceId: lastUsedWorkspaceId,
 			},
 		});
-		console.log(res);
+		console.log("ge me resukt", res);
 		return res.data;
 	};
 
 	signIn = async (email: string, password: string): Promise<SigninServiceResult> => {
-		const res = await this.request<SigninServiceResult>("POST", `/signin`, {
+		const res = await this.request<SigninServiceResult>("POST", `/auth/signin`, {
 			data: {
 				email,
 				password,
@@ -120,7 +109,7 @@ class ApiClient {
 	};
 
 	signUp = async (data: SignupServiceInput): Promise<SignupServiceResult> => {
-		const res = await this.request<SignupServiceResult>("POST", `/signup`, {
+		const res = await this.request<SignupServiceResult>("POST", `/auth/signup`, {
 			data,
 		});
 
@@ -129,44 +118,24 @@ class ApiClient {
 
 	//*users
 
-	getUsers = async (): Promise<TUser> => {
-		const res = await this.request<TUser>("GET", `/${this.#workspaceId}/users`);
+	getUsers = async (): Promise<UserModel> => {
+		const res = await this.request<UserModel>("GET", `/${this.workspaceId}/users`);
 
 		return res.data;
 	};
 
 	getUsersForProject = async () => {
-		const res = await this.request<TUser>("GET", `/${this.#workspaceId}/users`);
+		const res = await this.request<UserModel>("GET", `/${this.workspaceId}/users`);
 
 		return res.data;
 	};
 
 	//*projects
-	getProjects = async (
-		filter?: { archived?: boolean },
-		sorting?: Sorting
-	): Promise<GetProjectsService.ProjectItem[]> => {
-		const params: Record<string, unknown> = {};
-		if (filter) {
-			params.archived = filter.archived;
-		}
-		addSorting(params, sorting);
-		const res = await this.request<GetProjectsService.ProjectItem[]>(
-			"GET",
-			`/${this.#workspaceId}/projects`,
-			{
-				params,
-			}
-		);
-
-		console.log(res.data);
-		return res.data;
-	};
 
 	getProjectNodes = async (projectId: string, params: { q: string }) => {
-		const res = await this.request<TNode[]>(
+		const res = await this.request<NodeModel[]>(
 			"GET",
-			`/${this.#workspaceId}/projects/${projectId}/nodes`,
+			`/${this.workspaceId}/projects/${projectId}/nodes`,
 			{
 				params,
 			}
@@ -181,7 +150,7 @@ class ApiClient {
 	) => {
 		const res = await this.request<TTimeEntry[]>(
 			"GET",
-			`/${this.#workspaceId}/projects/${projectId}/time-entries`,
+			`/${this.workspaceId}/projects/${projectId}/time-entries`,
 			{
 				params,
 			}
@@ -190,22 +159,26 @@ class ApiClient {
 		return res.data;
 	};
 
-	createProject = async (data: unknown): Promise<TProject> => {
-		const res = await this.request<TProject>("POST", `/${this.#workspaceId}/projects`, {
+	createProject = async (data: unknown): Promise<ProjectDTO> => {
+		const res = await this.request<ProjectDTO>("POST", `/${this.workspaceId}/projects`, {
 			data,
 		});
 		return res.data;
 	};
 
-	updateProject = async (projectId: string, data: unknown): Promise<TProject> => {
-		const res = await this.request<TProject>("PUT", `/${this.#workspaceId}/projects/${projectId}`, {
-			data,
-		});
+	updateProject = async (projectId: string, data: unknown): Promise<ProjectDTO> => {
+		const res = await this.request<ProjectDTO>(
+			"PUT",
+			`/${this.workspaceId}/projects/${projectId}`,
+			{
+				data,
+			}
+		);
 		return res.data;
 	};
 
-	getOneProject = async (projectId: string): Promise<TProject> => {
-		const res = await this.request<TProject>("GET", `/${this.#workspaceId}/projects/${projectId}`);
+	getOneProject = async (projectId: string): Promise<ProjectDTO> => {
+		const res = await this.request<ProjectDTO>("GET", `/${this.workspaceId}/projects/${projectId}`);
 
 		return res.data;
 	};
@@ -213,7 +186,7 @@ class ApiClient {
 	getProjectMembersSearch = async (search: string): Promise<GetProjectMembersSearch.Member[]> => {
 		const res = await this.request<GetProjectMembersSearch.Member[]>(
 			"GET",
-			`/${this.#workspaceId}/projects/members/search`,
+			`/${this.workspaceId}/projects/members/search`,
 			{
 				params: {
 					search,
@@ -227,7 +200,7 @@ class ApiClient {
 	//*clients
 
 	getClients = async (search: string) => {
-		const res = await this.request<TCLient[]>("GET", `/${this.#workspaceId}/clients`, {
+		const res = await this.request<TCLient[]>("GET", `/${this.workspaceId}/clients`, {
 			params: {
 				searchText: search,
 			},
@@ -242,7 +215,7 @@ class ApiClient {
 		nodeId: string,
 		{ order, parentId }: { order?: number; parentId?: string | null }
 	) => {
-		const res = await this.request<TNode>("PUT", `/${this.#workspaceId}/nodes/${nodeId}/move`, {
+		const res = await this.request<NodeModel>("PUT", `/${this.workspaceId}/nodes/${nodeId}/move`, {
 			data: {
 				order,
 				parentId,
@@ -253,26 +226,29 @@ class ApiClient {
 	};
 
 	markTaskAsCompleted = async (taskId: string) => {
-		const res = await this.request<TNode>("PUT", `/${this.#workspaceId}/tasks/${taskId}/complete`);
+		const res = await this.request<NodeModel>(
+			"PUT",
+			`/${this.workspaceId}/tasks/${taskId}/complete`
+		);
 		return res.data;
 	};
 
 	createTask = async (data: CreateTaskServiceInput) => {
-		const res = await this.request<TNode>("POST", `/${this.#workspaceId}/tasks`, {
+		const res = await this.request<NodeModel>("POST", `/${this.workspaceId}/tasks`, {
 			data,
 		});
 		return res.data;
 	};
 
 	createFolder = async (data: CreateFolderServiceInput) => {
-		const res = await this.request<TNode>("POST", `/${this.#workspaceId}/folders`, {
+		const res = await this.request<NodeModel>("POST", `/${this.workspaceId}/folders`, {
 			data,
 		});
 		return res.data;
 	};
 
-	deleteNode = async (nodeId: string): Promise<TNode> => {
-		const res = await this.request<TNode>("DELETE", `/${this.#workspaceId}/nodes/${nodeId}`);
+	deleteNode = async (nodeId: string): Promise<NodeModel> => {
+		const res = await this.request<NodeModel>("DELETE", `/${this.workspaceId}/nodes/${nodeId}`);
 		return res.data;
 	};
 }

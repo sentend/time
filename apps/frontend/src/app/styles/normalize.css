@@ -1,0 +1,43 @@
+:root {
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+	font-size: 16px;
+}
+
+html {
+	scroll-behavior: smooth;
+	background-color: #fafafa;
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	src: url("/fonts/Inter-Light.woff2") format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	src: url("/fonts/Inter-Regular.woff2") format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	src: url("/fonts/Inter-Bold.woff2") format("woff2");
+	font-display: swap;
+}
+
+body {
+	@apply text-base;
+	font-family: "Inter";
+	height: 100%;
+}

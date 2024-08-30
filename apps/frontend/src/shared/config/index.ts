@@ -1,3 +1,8 @@
+import { atom, getDefaultStore } from "jotai";
+import { atomEffect } from "jotai-effect";
+import { apiClient } from "../api";
+import Cookies from "js-cookie";
+
 export type Color = {
 	bg: string;
 	text: string;
@@ -6,6 +11,52 @@ export type Color = {
 	stroke: string;
 	fill: string;
 };
+
+export const workspacesAtom = atom([]);
+export const workspaceMemberDataAtom = atom(null);
+export const currentWorkspaceAtom = atom(null);
+export const currentUserAtom = atom(null);
+
+export const isAppStartedAtom = atom(false);
+
+export const initDataAtom = async (workspaceId?: number) => {
+	try {
+		let effectiveWorkspaceId = undefined;
+		if (workspaceId) {
+			effectiveWorkspaceId = workspaceId;
+		}
+		const workspaceInCookie = Cookies.get("wid");
+		if (workspaceInCookie) {
+			effectiveWorkspaceId = parseInt(workspaceInCookie);
+		}
+
+		const data = await apiClient.getMe(effectiveWorkspaceId);
+		console.log("get me data", data);
+		const { user, workspaces, currentWorkspace, userWorkspaceData } = data;
+
+		apiClient.setWorkspaceId(currentWorkspace.id);
+		Cookies.set("wid", currentWorkspace.id.toString());
+
+		store.set(currentWorkspaceAtom, currentWorkspace);
+		store.set(workspaceMemberDataAtom, userWorkspaceData);
+		store.set(workspacesAtom, workspaces);
+		store.set(currentUserAtom, user);
+	} catch (err) {
+		let message = String(err);
+		if (err instanceof AxiosError) {
+			message = transformAxiosError(err).message;
+		}
+		set((state) => {
+			state.appError = message;
+		});
+	}
+};
+
+export const store = getDefaultStore();
+
+store.sub(isAppStartedAtom, () => {
+	initDataAtom(1);
+});
 
 export type Config = {
 	colors: Readonly<Color[]>;

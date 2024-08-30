@@ -6,6 +6,8 @@ import svgr from "vite-plugin-svgr";
 const DEFAULT_HOST = "localhost";
 const DEFAULT_PORT = "3000";
 
+console.log(__dirname);
+
 export default ({ mode }) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
@@ -28,8 +30,9 @@ export default ({ mode }) => {
 					target: `${process.env.VITE_API_URL}`,
 					changeOrigin: true,
 					rewrite: (path) => {
-						console.log(path);
-						return path.replace(/^\/api/, "");
+						const fixedPath = path.replace(/^\/api/, "");
+						console.log("fixed path", fixedPath);
+						return fixedPath;
 					},
 				},
 			},
