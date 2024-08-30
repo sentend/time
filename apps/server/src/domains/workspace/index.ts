@@ -7,5 +7,5 @@ export {
 	WorkspaceRepository,
 	workspaceRepository,
 } from "./workspace.repository";
-export type { WorkspaceModel } from "./workspace.model";
+export type { WorkspaceDTO } from "./workspace.model";
 export type { IWorkspaceRepository } from "./workspace.repository";

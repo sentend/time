@@ -3,17 +3,24 @@ import { db } from "@/db";
 import { sessionTable } from "@/domains/session";
 import { HTTPError } from "@/libs/httpError";
 import { createMiddleware } from "hono/factory";
+import { getCookie } from "hono/cookie";
 
 export const resolveUser = createMiddleware(async (ctx, next) => {
 	ctx.__internalState = {} as any;
 	const { req } = ctx;
 	const bearerToken = req.header("Authorization");
+	const sid = getCookie(ctx, "sid");
 
-	if (!bearerToken || !bearerToken.startsWith("Bearer ")) {
-		throw new HTTPError(401, { message: "Unauthorized: no token" });
+	// if (!bearerToken || !bearerToken.startsWith("Bearer ")) {
+	// 	throw new HTTPError(401, { message: "Unauthorized: no token" });
+	// }
+
+	if (!sid) {
+		throw new HTTPError(401, { message: "Unauthorized: no sid" });
 	}
 
-	const sessionId = bearerToken.substring(7);
+	// const sessionId = bearerToken.substring(7);
+	const sessionId = sid;
 
 	const currentSession = await db.query.sessionTable.findFirst({
 		where: eq(sessionTable.id, sessionId),

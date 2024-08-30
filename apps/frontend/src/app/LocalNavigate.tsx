@@ -5,6 +5,7 @@ import useCurrentWorkspace from "@/shared/hooks/useCurrentWorkspace";
 
 const Navigate = () => {
 	const currentWorkspace = useCurrentWorkspace();
+	console.log("navigate ?");
 
 	const navigate = useNavigate();
 	useEffect(() => {

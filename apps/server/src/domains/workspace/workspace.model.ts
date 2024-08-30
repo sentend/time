@@ -1,6 +1,6 @@
 import type { Nullable } from "~types/supportTypes";
 
-export type WorkspaceModel = {
+export type WorkspaceDTO = {
 	id: number;
 	name: string;
 	avatarFilename: Nullable<string>;

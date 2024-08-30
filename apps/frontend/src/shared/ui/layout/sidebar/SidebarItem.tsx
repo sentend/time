@@ -7,7 +7,7 @@ type SidebarItemProps = {
 	to: string;
 };
 
-const SidebarItem = ({ Icon, name, to }: SidebarItemProps) => {
+export const SidebarItem = ({ Icon, name, to }: SidebarItemProps) => {
 	return (
 		<NavLink
 			to={to}
@@ -43,5 +43,3 @@ const SidebarItem = ({ Icon, name, to }: SidebarItemProps) => {
 		</NavLink>
 	);
 };
-
-export default SidebarItem;

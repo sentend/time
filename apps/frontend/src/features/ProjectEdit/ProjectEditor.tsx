@@ -50,13 +50,10 @@ import UserBlock from "./UserBlock";
 import useCurrentWorkspace from "@/shared/hooks/useCurrentWorkspace";
 import useCurrentUser from "@/shared/hooks/useCurrentUser";
 
-import keys from "lodash/keys";
-import pick from "lodash/pick";
-
 import { PopoverAnchor, PopoverPortal } from "@radix-ui/react-popover";
 import { useDebounce } from "@/shared/hooks";
-import type { TProject } from "~types/models";
-import type { GetProjectsService } from "~types/services";
+import { useCreateProject } from "@/entities/project";
+import { useUpdateProject } from "@/entities/project/api";
 
 const memberSchema = z.object({
 	isManager: z.boolean(),
@@ -98,7 +95,7 @@ const projectSchema = z.object({
 export type ProjectFormInputs = z.infer<typeof projectSchema>;
 
 type ProjectEditorProps = {
-	projectId?: TProject;
+	projectId?: string;
 	closeDialog: () => void;
 	onCloseDialog?: () => void;
 };
@@ -106,10 +103,16 @@ type ProjectEditorProps = {
 const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorProps) => {
 	const { t } = useTranslation();
 
+	const dialogHeaderTitle = projectId ? t("project.edit") : t("project.new");
+
 	const [isDialogOpen, setIsDialogOpen] = useState(true);
 	const [isClientPopoverOpen, setIsClientPopoverOpen] = useState(false);
 	const [isRecurring, setIsRecurring] = useState(false);
 	const [clientsSearch, setClientsSearch] = useState("");
+
+	const { isPending: isLoading, mutate: create } = useCreateProject();
+
+	const { isPending: isLoadingUpdate, mutate: update } = useUpdateProject();
 
 	const debounceSetClientsSearch = useDebounce((val: string) => setClientsSearch(val), 150);
 
@@ -159,6 +162,7 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 		values: project,
 		resolver: zodResolver(projectSchema),
 	});
+
 	const { register, formState, control, setValue, watch, getValues, reset, setFocus } = formMethods;
 
 	const { errors } = formState;
@@ -220,71 +224,6 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 
 	const queryClient = useQueryClient();
 
-	const { isPending: isLoading, mutate: create } = useMutation({
-		mutationKey: ["create", "project"],
-		mutationFn: async (data: ProjectFormInputs) => {
-			console.log("DATA", data);
-			const project = await apiClient.createProject({
-				...data,
-				workspaceId: currentWorkspace.id,
-				createdBy: currentUser.id,
-				updatedBy: currentUser.id,
-			});
-
-			return project;
-		},
-
-		onSuccess() {
-			queryClient.invalidateQueries({ queryKey: ["projects"] });
-
-			onOpenChange();
-			setTimeout(() => {
-				updateWorkspaceNextProjectColor();
-			}, 200);
-		},
-	});
-
-	const { isPending: isLoadingUpdate, mutate: update } = useMutation({
-		mutationKey: ["update", "project"],
-		mutationFn: async (data: ProjectFormInputs) => {
-			const updatedProject = await apiClient.updateProject(project!.id, {
-				...data,
-				workspaceId: currentWorkspace.id,
-				updatedBy: currentUser.id,
-			});
-
-			return updatedProject;
-		},
-
-		onSuccess(data) {
-			queryClient.setQueriesData(
-				{ queryKey: ["projects"] },
-				(oldData: GetProjectsService.ProjectItem[] | undefined) => {
-					let res = oldData;
-					if (oldData?.length) {
-						const effectiveOldData = [...oldData];
-						const index = effectiveOldData.findIndex((project) => project.id === data.id);
-
-						const project = effectiveOldData.at(index)!;
-
-						const updatedProject = {
-							...project,
-							...pick(data, keys(project)),
-							clientName: data.client?.name ?? null,
-						};
-
-						effectiveOldData.splice(index, 1, updatedProject);
-						res = effectiveOldData;
-					}
-
-					return res;
-				}
-			);
-
-			onOpenChange();
-		},
-	});
-
 	const onSubmit: SubmitHandler<ProjectFormInputs> = (data) => {
 		if (!data.isBudgetSet) {
 			data.budgetType = null;
@@ -299,7 +238,10 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 			data.budgetStartDate = null;
 			data.budgetEndDate = null;
 		}
-		project?.id ? update(data) : create(data);
+
+		project?.id
+			? update({ data, workspaceId: currentWorkspace.id })
+			: create({ data, workspaceId: currentWorkspace.id });
 	};
 
 	console.log("ERRORS", errors);
@@ -316,6 +258,19 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 		setValue("budgetType", 1);
 	};
 
+	const handleRecurringChange = (value: boolean) => {
+		setIsRecurring(value);
+
+		if (value) {
+			let date = new Date();
+			if (project?.id && project.budgetStartDate) {
+				date = new Date(project.budgetStartDate);
+			}
+			setValue("budgetStartDate", date);
+			getValues("budgetInterval") === null && setValue("budgetInterval", 1);
+		}
+	};
+
 	return (
 		<Dialog defaultOpen open={isDialogOpen} onOpenChange={onOpenChange}>
 			<DialogContent className="p-8 max-w-[760px]">
@@ -323,9 +278,7 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 					"Loading project..."
 				) : (
 					<>
-						<DialogHeader className="font-bold text-xl">
-							{project?.id ? t("project.edit") : t("project.new")}
-						</DialogHeader>
+						<DialogHeader className="font-bold text-xl">{dialogHeaderTitle}</DialogHeader>
 						<Form
 							formMethods={formMethods}
 							onSubmit={onSubmit}
@@ -578,7 +531,7 @@ const ProjectEditor = ({ projectId, closeDialog, onCloseDialog }: ProjectEditorP
 													<Checkbox
 														checked={isRecurring}
 														id="isReccuring"
-														onCheckedChange={(checked: boolean) => setIsRecurring(checked)}
+														onCheckedChange={handleRecurringChange}
 													/>
 													<label htmlFor="tags">{t("project.isRecurring")}</label>
 												</div>

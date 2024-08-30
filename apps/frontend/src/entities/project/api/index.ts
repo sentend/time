@@ -1,30 +1,91 @@
 import type { ProjectDTO } from "@/server/project";
 import { apiClient } from "@/shared/api";
+import { queryClient } from "@/shared/config";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const createProject = async (workspaceId: number, data: unknown): Promise<ProjectDTO> => {
-	const res = await apiClient.request<ProjectDTO>("POST", `/${workspaceId}/projects`, {
-		data,
-	});
-
-	return res.data;
+export type ProjectsFilter = {
+	isArchived?: boolean;
+	page: number;
+	size: number;
 };
 
-export const getProjects = async (
-	workspaceId: number,
-	filter?: { archived?: boolean }
-): Promise<ProjectDTO[]> => {
-	const params: Record<string, unknown> = {};
+export type CreateProjectParams = {
+	workspaceId: number;
+	data: ProjectDTO;
+};
 
-	if (filter) {
-		params.archived = filter.archived;
-	}
+export const useProjects = (workspaceId: number, { page, size }: ProjectsFilter) => {
+	return useQuery({
+		queryKey: ["projects", workspaceId, size, page],
+		queryFn: async () => {
+			const params = {
+				page,
+				size,
+			};
 
-	const res = await apiClient.request<ProjectDTO[]>("GET", `/${workspaceId}/projects`, {
-		params,
+			const res = await apiClient.request<ProjectDTO[]>("GET", `/${workspaceId}/projects`, {
+				params,
+			});
+
+			console.log(res.data);
+			return res.data;
+		},
+		retry: 3,
+		refetchOnWindowFocus: false,
+	});
+};
+
+export const useCreateProject = () =>
+	useMutation({
+		mutationKey: ["projects", "create"],
+		mutationFn: async ({ workspaceId, data }: CreateProjectParams) => {
+			const res = await apiClient.request<ProjectDTO>("POST", `/${workspaceId}/projects`, {
+				data,
+			});
+
+			return res.data;
+		},
 	});
 
-	console.log(res.data);
-	return res.data;
+export const useUpdateProject = () => {
+	return useMutation({
+		mutationKey: ["update", "project"],
+		mutationFn: async ({ workspaceId, data }: CreateProjectParams) => {
+			const res = await apiClient.request<ProjectDTO>(
+				"PUT",
+				`/${workspaceId}/projects/${data.id}`,
+				{
+					data,
+				}
+			);
+			return res.data;
+		},
+		onSuccess(data) {
+			queryClient.setQueriesData(
+				{ queryKey: ["projects"] },
+				(oldData: GetProjectsService.ProjectItem[] | undefined) => {
+					let res = oldData;
+					if (oldData?.length) {
+						const effectiveOldData = [...oldData];
+						const index = effectiveOldData.findIndex((project) => project.id === data.id);
+
+						const project = effectiveOldData.at(index)!;
+
+						const updatedProject = {
+							...project,
+							...pick(data, keys(project)),
+							clientName: data.client?.name ?? null,
+						};
+
+						effectiveOldData.splice(index, 1, updatedProject);
+						res = effectiveOldData;
+					}
+
+					return res;
+				}
+			);
+		},
+	});
 };
 
 // getProjectNodes = async (projectId: string, params: { q: string }) => {

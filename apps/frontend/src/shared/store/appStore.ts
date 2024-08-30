@@ -5,22 +5,22 @@ import { immer } from "zustand/middleware/immer";
 import transformAxiosError from "../utils/transformAxiosError";
 import { AxiosError } from "axios";
 import { sid } from "../constants";
-import type { WorkspaceModel } from "@/server/workspace";
+import type { WorkspaceDTO } from "@/server/workspace";
 import type { WorkspaceMember } from "@/server/workspace-member";
-import type { UserModel } from "@/server/user";
+import type { UserDTO } from "@/server/user";
 import { atom } from "jotai";
 
 type StoreState = {
-	currentUser: UserModel | null;
+	currentUser: UserDTO | null;
 	userWorkspaceData: WorkspaceMember | null;
-	workspaces: WorkspaceModel[];
-	currentWorkspace: WorkspaceModel | null;
+	workspaces: WorkspaceDTO[];
+	currentWorkspace: WorkspaceDTO | null;
 	appError: string | null;
 };
 
 type StoreActions = {
 	logout: () => void;
-	getCurrentUser: () => UserModel;
+	getCurrentUser: () => UserDTO;
 	initSession: (sessionId: string, lastUsedWorkspaceId?: number) => Promise<void>;
 	updateWorkspaceNextProjectColor: () => number;
 };

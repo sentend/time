@@ -5,17 +5,17 @@ import {
 	type NewWorkspace,
 	type Workspace,
 } from "./workspace.entity";
-import type { WorkspaceModel } from "./workspace.model";
+import type { WorkspaceDTO } from "./workspace.model";
 import { eq } from "drizzle-orm";
 import type { Maybe } from "~types/supportTypes";
 
 export interface IWorkspaceRepository {
-	create(values: NewWorkspace, _db: DB): Promise<Maybe<WorkspaceModel>>;
+	create(values: NewWorkspace, _db: DB): Promise<Maybe<WorkspaceDTO>>;
 	findById(id: Workspace["id"]): Promise<Maybe<Workspace>>;
 	updateWorkspaceById(
 		id: Workspace["id"],
 		values: Partial<Workspace>,
-	): Promise<Maybe<WorkspaceModel>>;
+	): Promise<Maybe<WorkspaceDTO>>;
 }
 
 export class WorkspaceRepository implements IWorkspaceRepository {

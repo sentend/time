@@ -6,13 +6,11 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { App } from "./App";
 
 //initialize
-import "../shared/i18n";
+import "@/shared/i18n";
 import { DndProvider } from "react-dnd";
-import { isAppStartedAtom, store } from "@/shared/config";
+import { isAppStartedAtom, queryClient, store } from "@/shared/config";
 
 addEventListener("DOMContentLoaded", () => {
-	const queryClient = new QueryClient();
-
 	store.set(isAppStartedAtom, true);
 
 	ReactDOM.createRoot(document.getElementById("root")!).render(

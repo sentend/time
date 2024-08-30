@@ -6,4 +6,3 @@
 
 // export type { ProjectNodesFilters } from "../../node/methods/getProjectNodes";
 // export type { ProjectTimeEntriesFilters } from "./getProjectTimeEntries";
-export { ProjectMapper } from "./project.mapper";

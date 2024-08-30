@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 
-import { Header, Sidebar } from "@/widgets";
+import { Sidebar } from "./sidebar/Sidebar";
 
-const MainLayout = () => {
+export const MainLayout = () => {
 	return (
 		<div className="w-screen min-h-screen flex">
 			<Sidebar />
@@ -18,5 +18,3 @@ const MainLayout = () => {
 		</div>
 	);
 };
-
-export default MainLayout;

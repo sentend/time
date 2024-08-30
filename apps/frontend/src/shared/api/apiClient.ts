@@ -13,7 +13,7 @@ import {
 } from "~types/services";
 import transformAxiosError from "../utils/transformAxiosError";
 import { TCLient, TTimeEntry } from "~types/models";
-import type { UserModel } from "@/server/user";
+import type { UserDTO } from "@/server/user";
 import type { NodeModel } from "@/server/node";
 import type { ProjectDTO } from "@/server/project";
 
@@ -94,7 +94,7 @@ class ApiClient {
 				workspaceId: lastUsedWorkspaceId,
 			},
 		});
-		console.log("ge me resukt", res);
+		console.log("ge me result", res);
 		return res.data;
 	};
 
@@ -118,14 +118,14 @@ class ApiClient {
 
 	//*users
 
-	getUsers = async (): Promise<UserModel> => {
-		const res = await this.request<UserModel>("GET", `/${this.workspaceId}/users`);
+	getUsers = async (): Promise<UserDTO> => {
+		const res = await this.request<UserDTO>("GET", `/${this.workspaceId}/users`);
 
 		return res.data;
 	};
 
-	getUsersForProject = async () => {
-		const res = await this.request<UserModel>("GET", `/${this.workspaceId}/users`);
+	getUsersForProject = async (workspaceId: number) => {
+		const res = await this.request<UserDTO>("GET", `/${workspaceId}/users`);
 
 		return res.data;
 	};
@@ -159,8 +159,8 @@ class ApiClient {
 		return res.data;
 	};
 
-	createProject = async (data: unknown): Promise<ProjectDTO> => {
-		const res = await this.request<ProjectDTO>("POST", `/${this.workspaceId}/projects`, {
+	createProject = async (workspaceId: number, data: unknown): Promise<ProjectDTO> => {
+		const res = await this.request<ProjectDTO>("POST", `/${workspaceId}/projects`, {
 			data,
 		});
 		return res.data;

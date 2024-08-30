@@ -7,7 +7,9 @@ import { DataTable } from "@/shared/ui/DataTable/DataTable";
 
 import { getColumns } from "./columns";
 import { GetProjectsService } from "~types/services";
-import useProjectsList from "./useProjectsList";
+import { useProjects } from "@/entities/project";
+import { useAtomValue } from "jotai";
+import { currentWorkspaceAtom } from "@/shared/config";
 
 export type ProjectListFilter = {
 	archived?: boolean;
@@ -21,11 +23,12 @@ export type ProjectTableProps = {
 
 const ProjectListWidget = (props: ProjectTableProps) => {
 	const { filter, onRowClick, onActionsClick } = props;
+	const currentWorkspace = useAtomValue(currentWorkspaceAtom);
 
 	const { t } = useTranslation();
 	const columns = useMemo(() => getColumns(t, onActionsClick), [t]);
 
-	const { data, isLoading } = useProjectsList({ filter });
+	const { data, isLoading } = useProjects(currentWorkspace!.id, { size: 10, page: 1 });
 
 	const handleRowClick = (row: Row<GetProjectsService.ProjectItem>) => {
 		onRowClick(row.original);

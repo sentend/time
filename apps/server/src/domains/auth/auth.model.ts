@@ -1,4 +1,4 @@
-import type { User, UserModel } from "../user";
+import type { User, UserDTO } from "../user";
 import type { Workspace } from "../workspace";
 
 export type SigninData = {

@@ -19,7 +19,7 @@ export class Storage {
 		return JSON.parse(value);
 	}
 
-	async setItem(key: string, value: unknown) {
+	async setItem<T>(key: string, value: T) {
 		this.storage.setItem(key, JSON.stringify(value));
 	}
 

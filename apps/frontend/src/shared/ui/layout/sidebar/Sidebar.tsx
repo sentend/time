@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Logo, TimeentriesIcon, TimelineIcon, TimesheetIcon, SettingsIcon } from "@/shared/assets";
 import { Avatar, Separator } from "@/shared/ui";
-import SidebarItem from "./SidebarItem";
+import { SidebarItem } from "./SidebarItem";
 import useCurrentWorkspace from "@/shared/hooks/useCurrentWorkspace";
 import useCurrentUser from "@/shared/hooks/useCurrentUser";
 import { useAppStore } from "@/shared/store";
 
-const Sidebar = () => {
+export const Sidebar = () => {
 	const { t } = useTranslation();
 	const currentWorkspace = useCurrentWorkspace();
 	const currentUser = useCurrentUser();
@@ -68,5 +68,3 @@ const Sidebar = () => {
 		</div>
 	);
 };
-
-export default Sidebar;
