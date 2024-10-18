@@ -1,17 +1,13 @@
-import type { ProjectDTO } from "@/server/project";
-import { apiClient } from "@/shared/api";
-import { queryClient } from "@/shared/config";
+import type { ProjectDTO } from "server/project";
+import { apiClient, queryClient } from "@/shared/api";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
+import type { CreateProjectParams } from "./create-project";
 
 export type ProjectsFilter = {
 	isArchived?: boolean;
 	page: number;
 	size: number;
-};
-
-export type CreateProjectParams = {
-	workspaceId: number;
-	data: ProjectDTO;
 };
 
 export const useProjects = (workspaceId: number, { page, size }: ProjectsFilter) => {
@@ -35,8 +31,13 @@ export const useProjects = (workspaceId: number, { page, size }: ProjectsFilter)
 	});
 };
 
-export const useCreateProject = () =>
-	useMutation({
+export const useCreateProject = () => {
+	const {
+		mutate: createProject,
+		isSuccess: isCreated,
+		isPending: isCreationPending,
+		...rest
+	} = useMutation({
 		mutationKey: ["projects", "create"],
 		mutationFn: async ({ workspaceId, data }: CreateProjectParams) => {
 			const res = await apiClient.request<ProjectDTO>("POST", `/${workspaceId}/projects`, {
@@ -47,8 +48,20 @@ export const useCreateProject = () =>
 		},
 	});
 
+	return {
+		createProject,
+		isCreated,
+		isCreationPending,
+		...rest,
+	};
+};
+
 export const useUpdateProject = () => {
-	return useMutation({
+	const {
+		mutate: updateProject,
+		isPending: isUpdateLoading,
+		...rest
+	} = useMutation({
 		mutationKey: ["update", "project"],
 		mutationFn: async ({ workspaceId, data }: CreateProjectParams) => {
 			const res = await apiClient.request<ProjectDTO>(
@@ -86,6 +99,40 @@ export const useUpdateProject = () => {
 			);
 		},
 	});
+
+	return {
+		update: updateProject,
+		isUpdateLoading,
+		...rest,
+	};
+};
+
+export const useGetProjectById = (projectId: string, workspaceId: number) => {
+	const {
+		data: project,
+		isLoading: isProjectLoading,
+		isSuccess: isProjectSuccessfullyLoaded,
+		...rest
+	} = useQuery({
+		queryKey: ["project", projectId, workspaceId],
+		queryFn: async () => {
+			const res = await apiClient.request<ProjectDTO>(
+				"GET",
+				`/${workspaceId}/projects/${projectId}`
+			);
+
+			return res;
+		},
+		enabled: !!projectId,
+		gcTime: 0,
+	});
+
+	return {
+		project,
+		isProjectLoading,
+		isProjectSuccessfullyLoaded,
+		...rest,
+	};
 };
 
 // getProjectNodes = async (projectId: string, params: { q: string }) => {

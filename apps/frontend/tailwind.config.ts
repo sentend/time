@@ -13,7 +13,6 @@ module.exports = {
 		"./src/shared/ui/**/*.{ts,tsx}",
 		"./src/shared/config/**/*.{ts,tsx}",
 	],
-
 	theme: {
 		container: {
 			center: true,
@@ -29,6 +28,10 @@ module.exports = {
 			},
 			width: {
 				sidebar: "185px",
+				dialog: "760px",
+			},
+			maxWidth: {
+				dialog: "760px",
 			},
 			fontFamily: {
 				sans: ["Inter"],

@@ -10,13 +10,15 @@ export const databaseCredentials = {
 	ssl: false,
 } satisfies ClientConfig;
 
+console.log(databaseCredentials);
+
 export const serverConfig = {
 	apiVersion: process.env.API_VERSION || "/v1",
 	hostname: process.env.API_HOST || "localhost",
 	port: Number(process.env.API_PORT) || 3000,
 } as const;
 
-export const NUMBER_OF_COLORS = Number(process.env.NUMBER_OF_COLORS);
+export const NUMBER_OF_COLORS = Number(18);
 
 export const NODE_ENV = process.env.NODE_ENV;
 

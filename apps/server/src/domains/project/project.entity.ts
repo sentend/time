@@ -68,7 +68,7 @@ export const projectRelations = relations(projectTable, ({ one, many }) => ({
 		references: [workspaceTable.id],
 	}),
 	rate: one(rateTable, {
-		fields: [projectTable.id],
+		fields: [projectTable.rateId],
 		references: [rateTable.id],
 	}),
 	createdBy: one(userTable, {
@@ -88,13 +88,13 @@ export const projectRelations = relations(projectTable, ({ one, many }) => ({
 	tags: many(projectTagTable),
 }));
 
-export type Project = InferSelectModel<typeof projectTable> & {
+export type ProjectEntity = InferSelectModel<typeof projectTable> & {
 	workspace?: Workspace;
 	rate?: Rate;
 	tasks?: Node[];
 	projectTag?: ProjectTag[];
 	members?: ProjectMember[];
-	client?: Client | null;
+	client?: Client;
 };
 
-export type NewProject = InferInsertModel<typeof projectTable>;
+export type NewProjectEntity = InferInsertModel<typeof projectTable>;

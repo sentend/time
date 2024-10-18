@@ -1,7 +1,7 @@
-import { config } from "@/shared/config";
+import { COLORS } from "@/shared/config";
 import { useKeyboard } from "@/shared/hooks";
 import { InputField } from "@/shared/ui";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderIcon } from "lucide-react";
 import { useEffect } from "react";
@@ -77,7 +77,7 @@ const InlineFolderEditor = ({
 				<FolderIcon
 					width={26}
 					height={26}
-					className={cn("", config.colors[effectiveColorId]?.fill)}
+					className={cn("", COLORS.colors[effectiveColorId]?.fill)}
 				/>
 				<form className="w-full" onSubmit={handleSubmit(onSubmitForm)}>
 					<InputField

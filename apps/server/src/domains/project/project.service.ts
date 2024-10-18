@@ -1,6 +1,5 @@
 import { HTTPError } from "@/libs/httpError";
 import { workspaceRepository, type Workspace } from "../workspace";
-import type { Project } from "./project.entity";
 import {
 	projectRepository,
 	type IProjectRepository,
@@ -8,8 +7,8 @@ import {
 import { userRepository, type IUserRepository, type User } from "../user";
 import {
 	newProjectSchema,
-	type NewProjectModel,
-	type ProjectDTO,
+	selectProjectSchema,
+	type NewProjectDTO,
 } from "./project.model";
 import { db } from "@/db";
 import {
@@ -19,20 +18,30 @@ import {
 import type { IWorkspaceRepository } from "../workspace";
 import { NUMBER_OF_COLORS } from "@/config";
 import { ProjectMapper } from "./helpers";
+import type { NewProject } from "./project.model";
+import type { ProjectDTO, ProjectLightDTO } from "./project.dto";
 
 type CreateProjectParams = {
 	currentWorkspace: Workspace;
 	currentUser: User;
-	body: NewProjectModel;
+	body: NewProjectDTO;
 };
 
 export interface IProjectService {
 	getAllProjectsInWorkspace(
 		workspaceId: number,
 		fiters: {},
-	): Promise<Project[]>;
-
+	): Promise<ProjectLightDTO[]>;
+	getProjectByIdInWorkspace(
+		projectId: string,
+		workspaceId: number,
+	): Promise<ProjectDTO>;
 	createProject(params: CreateProjectParams): Promise<ProjectDTO>;
+	updateProjectById(
+		projectId: string,
+		workspaceId: number,
+		values: Partial<ProjectDTO>,
+	): Promise<ProjectDTO>;
 }
 
 export class ProjectService implements IProjectService {
@@ -49,7 +58,22 @@ export class ProjectService implements IProjectService {
 				workspaceId,
 			);
 
-		return projects;
+		return projects.map(ProjectMapper.toLightDTO);
+	}
+
+	async getProjectByIdInWorkspace(projectId: string, workspaceId: number) {
+		const project = await this.projectRepository.findProjectByIdInWorkspace(
+			projectId,
+			workspaceId,
+		);
+
+		if (!project) {
+			throw new HTTPError(404, {
+				message: "Not Found: Project not found",
+			});
+		}
+
+		return ProjectMapper.toDTO(project);
 	}
 
 	async createProject(params: CreateProjectParams) {
@@ -127,7 +151,31 @@ export class ProjectService implements IProjectService {
 			return newProject;
 		});
 
-		return ProjectMapper.toModel(project);
+		return ProjectMapper.toDTO(project);
+	}
+
+	async updateProjectById(
+		projectId: string,
+		workspaceId: number,
+		values: Partial<ProjectDTO>,
+	) {
+		const data = selectProjectSchema.parse(values);
+
+		console.log("data", data);
+		const updatedProject = await this.projectRepository.updateProjectById(
+			projectId,
+			workspaceId,
+			data,
+		);
+
+		if (!updatedProject) {
+			throw new HTTPError(404, {
+				message:
+					"Not found: failed to update, probably project not exist",
+			});
+		}
+
+		return ProjectMapper.toDTO(updatedProject);
 	}
 }
 

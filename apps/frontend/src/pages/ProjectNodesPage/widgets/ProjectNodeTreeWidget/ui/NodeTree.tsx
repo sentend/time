@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { TNode, TTask } from "~types/models";
 import { Nullable } from "~types/supportTypes";
 

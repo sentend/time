@@ -2,7 +2,7 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { VariantProps, cva } from "class-variance-authority";
 import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 
 export const avatarVariants = cva("relative flex shrink-0 overflow-hidden rounded-full", {
 	variants: {

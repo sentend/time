@@ -1,5 +1,5 @@
 import { pgTable, primaryKey, timestamp, uuid } from "drizzle-orm/pg-core";
-import { Project, projectTable } from "../project/project.entity";
+import { ProjectEntity, projectTable } from "../project/project.entity";
 import { Tag, tagTable } from "../tag/tag.entity";
 import { Rate, rateTable } from "../rate/rate.entity";
 import { InferSelectModel, relations } from "drizzle-orm";
@@ -44,5 +44,5 @@ export const projectTagRelations = relations(projectTagTable, ({ one }) => ({
 export type ProjectTag = InferSelectModel<typeof projectTagTable> & {
 	rate: Rate;
 	tag: Tag;
-	project: Project;
+	project: ProjectEntity;
 };

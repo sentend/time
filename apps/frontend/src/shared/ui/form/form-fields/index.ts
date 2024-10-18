@@ -1,3 +1,4 @@
-export { default as CheckboxField } from "./CheckboxField";
-export { default as InputField } from "./InputField";
-export { default as SwitchField } from "./SwitchField";
+export { CheckboxField } from "./checkbox-field";
+export { InputField } from "./input-field";
+export { SwitchField } from "./switch-field";
+export { ColorPaletteField } from "./color-palette-field";

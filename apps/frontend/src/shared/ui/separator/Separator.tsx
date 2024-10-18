@@ -1,7 +1,7 @@
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import * as React from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 
 //todo add variant for orientation
 

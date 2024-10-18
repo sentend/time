@@ -2,7 +2,7 @@ import { useOutletContext, useParams } from "react-router";
 import {
 	ProjectDetailsContext,
 	ProjectDetailsPageParams,
-} from "../ProjectDetailsPage/ProjectDetailsPage";
+} from "../project-details-page/ProjectDetailsPage";
 import ProjectNodeTreeWidget from "./widgets/ProjectNodeTreeWidget/ProjectNodeTreeWidget";
 
 const ProjectNodesPage = () => {

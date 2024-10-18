@@ -2,7 +2,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 
 const buttonVariants = cva("btn-base text-base bg-main gap-2", {
 	variants: {

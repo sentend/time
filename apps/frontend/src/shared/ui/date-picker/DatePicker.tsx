@@ -1,7 +1,7 @@
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
 
-import { cn, formatDate } from "@/shared/utils";
+import { cn, formatDate } from "@/shared/libs";
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from "@/shared/ui";
 
 //todo refactor

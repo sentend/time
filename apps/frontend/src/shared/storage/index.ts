@@ -1,4 +1,5 @@
 import { LocalStorageAdapter } from "./adapters/localStorageAdapter";
+import { SessionStorageAdapter } from "./adapters/session-storage-adapter";
 
 export interface IStorageAdapter {
 	setItem(key: string, value: unknown): Promise<void>;
@@ -20,7 +21,7 @@ export class Storage {
 	}
 
 	async setItem<T>(key: string, value: T) {
-		this.storage.setItem(key, JSON.stringify(value));
+		this.storage.setItem(key, value);
 	}
 
 	async removeItem(key: string) {
@@ -33,3 +34,4 @@ export class Storage {
 }
 
 export const storage = new Storage(new LocalStorageAdapter());
+export const sessionStorage = new Storage(new SessionStorageAdapter());

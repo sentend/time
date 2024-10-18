@@ -196,7 +196,7 @@ export class AuthService {
 		return {
 			user: UserMapper.toModel(currentUser),
 			workspaces: workspaces.map(WorkspaceMapper.toModel),
-			currentWorkspace: WorkspaceMapper.toModel(currentWorkspace),
+			workspace: WorkspaceMapper.toModel(currentWorkspace),
 			// userWorkspaceData: toIUserWorkspaceData(userWorkspaceData),
 		};
 	}

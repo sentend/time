@@ -19,8 +19,8 @@ import {
 	UseFormReturn,
 } from "react-hook-form";
 
-import { cn } from "@/shared/utils";
-import { Label } from "@/shared/ui";
+import { cn } from "@/shared/libs";
+import { Label } from "@/shared/ui/label";
 
 export type FormProps<T extends FieldValues> = {
 	onSubmit: SubmitHandler<T>;

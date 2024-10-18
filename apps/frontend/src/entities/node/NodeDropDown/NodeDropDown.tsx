@@ -14,7 +14,7 @@ import {
 } from "@/shared/ui";
 import { useTranslation } from "react-i18next";
 import { UseMutateFunction } from "@tanstack/react-query";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { useState } from "react";
 import { DotsIcon } from "@/shared/assets";
 

@@ -1,8 +1,8 @@
 import { FolderIcon, IconArrowRight, IconCompleted } from "@/shared/assets";
-import { config } from "@/shared/config";
+import { COLORS } from "@/shared/config";
 import { Text } from "@/shared/ui";
-import { cn, highlitedSubstring } from "@/shared/utils";
-import StartPauseButton from "@/shared/ui/StaretPauseButton/StartPauseButton";
+import { cn, highlitedSubstring } from "@/shared/libs";
+import StartPauseButton from "@/shared/ui/start-pause-button/StartPauseButton";
 import { DurationDisplay } from "@/entities/node";
 import { ReactNode, useState } from "react";
 import {
@@ -49,7 +49,7 @@ const NodeItem = ({ className, node, onRowClick, searchString }: NodeItemProps) 
 							"rotate-90": isFolderExpanded,
 						})}
 					/>
-					<FolderIcon width={26} height={26} className={cn("", config.colors[colorId]?.fill)} />
+					<FolderIcon width={26} height={26} className={cn("", COLORS.colors[colorId]?.fill)} />
 				</>
 			)}
 

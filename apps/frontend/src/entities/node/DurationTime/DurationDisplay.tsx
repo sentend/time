@@ -1,6 +1,6 @@
 import { Text } from "@/shared/ui";
 import { TextProps } from "@/shared/ui/text/Text";
-import { cn, getDuration } from "@/shared/utils";
+import { cn, getDuration } from "@/shared/libs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 

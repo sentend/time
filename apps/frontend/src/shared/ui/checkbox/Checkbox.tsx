@@ -3,7 +3,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { Check } from "lucide-react";
 import * as React from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 
 export const checkboxVariants = cva(
 	"peer shrink-0 rounded-sm border-2 border-gray-10 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-white",

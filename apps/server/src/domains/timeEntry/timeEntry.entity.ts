@@ -11,7 +11,7 @@ import { User, userTable } from "../user/user.entity";
 import { Rate, rateTable } from "../rate/rate.entity";
 import { Workspace, workspaceTable } from "../workspace/workspace.entity";
 import { InferSelectModel, relations } from "drizzle-orm";
-import { Project, projectTable } from "../project/project.entity";
+import { ProjectEntity, projectTable } from "../project/project.entity";
 import { Node, nodeTable } from "../node";
 import { timeEntryTagTable } from "../timeEntry-tag/timeEntryTag.entity";
 
@@ -80,5 +80,5 @@ export type TimeEntry = InferSelectModel<typeof timeEntryTable> & {
 	task?: Node;
 	workspace?: Workspace;
 	user?: User;
-	project?: Project;
+	project?: ProjectEntity;
 };

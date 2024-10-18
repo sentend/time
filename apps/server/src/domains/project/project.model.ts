@@ -4,28 +4,7 @@ import { newProjectMemberSchema } from "../project-member";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { projectTable } from "./project.entity";
 
-const selectProjectSchema = createSelectSchema(projectTable);
-
-export const projectSchema = selectProjectSchema.pick({
-	id: true,
-	avatarFilename: true,
-	budgetEndDate: true,
-	budgetInterval: true,
-	budgetStartDate: true,
-	budgetType: true,
-	budgetValue: true,
-	colorId: true,
-	clientId: true,
-	createdAt: true,
-	isArchived: true,
-	isBillable: true,
-	isBudgetSet: true,
-	isNotedRequired: true,
-	name: true,
-	isTagsRequired: true,
-});
-
-export type ProjectDTO = z.infer<typeof projectSchema>;
+export const selectProjectSchema = createSelectSchema(projectTable);
 
 const insertProjectSchema = createInsertSchema(projectTable, {
 	colorId: t =>
@@ -42,4 +21,5 @@ export const newProjectSchema = insertProjectSchema.extend({
 	members: z.array(newProjectMemberSchema),
 });
 
-export type NewProjectModel = z.infer<typeof newProjectSchema>;
+export type NewProjectDTO = z.infer<typeof newProjectSchema>;
+export type NewProject = z.infer<typeof newProjectSchema>;

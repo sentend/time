@@ -1,21 +1,32 @@
 import { db, type DB } from "@/db";
-import { projectTable, type Project, type NewProject } from "./project.entity";
-import { eq } from "drizzle-orm";
+import {
+	projectTable,
+	type ProjectEntity,
+	type NewProjectEntity,
+} from "./project.entity";
+import { and, eq } from "drizzle-orm";
 import type { Maybe } from "~types/supportTypes";
 
 export interface IProjectRepository {
-	createProject(values: NewProject, _db?: DB): Promise<Project | undefined>;
-	updateProject(
-		id: Project["id"],
-		values: Partial<Project>,
-	): Promise<Maybe<Project>>;
-	getProjectById(id: Project["id"]): Promise<Maybe<Project>>;
-	findAllProjectsInWorkspace(workspaceId: number): Promise<Project[]>;
-	deleteProject(id: Project["id"]): void;
+	createProject(
+		values: NewProjectEntity,
+		_db?: DB,
+	): Promise<ProjectEntity | undefined>;
+	updateProjectById(
+		id: ProjectEntity["id"],
+		workspaceId: number,
+		values: Partial<ProjectEntity>,
+	): Promise<ProjectEntity | undefined>;
+	findProjectByIdInWorkspace(
+		id: ProjectEntity["id"],
+		workspaceId: number,
+	): Promise<Maybe<ProjectEntity>>;
+	findAllProjectsInWorkspace(workspaceId: number): Promise<ProjectEntity[]>;
+	deleteProject(id: ProjectEntity["id"]): void;
 }
 
 export class ProjectRepository implements IProjectRepository {
-	async createProject(values: NewProject, _db = db) {
+	async createProject(values: NewProjectEntity, _db = db) {
 		const [project] = await _db
 			.insert(projectTable)
 			.values(values)
@@ -32,7 +43,7 @@ export class ProjectRepository implements IProjectRepository {
 		return projects;
 	}
 
-	async deleteProject(id: Project["id"]) {
+	async deleteProject(id: ProjectEntity["id"]) {
 		const [project] = await db
 			.delete(projectTable)
 			.where(eq(projectTable.id, id))
@@ -43,19 +54,32 @@ export class ProjectRepository implements IProjectRepository {
 		}
 	}
 
-	async getProjectById(id: Project["id"]) {
+	async findProjectByIdInWorkspace(
+		id: ProjectEntity["id"],
+		workspaceId: number,
+	) {
 		const project = await db.query.projectTable.findFirst({
-			where: (fields, { eq }) => eq(fields.id, id),
+			where: (fields, { eq, and }) =>
+				and(eq(fields.id, id), eq(fields.workspaceId, workspaceId)),
 		});
 
 		return project;
 	}
 
-	async updateProject(id: string, values: Partial<Project>) {
+	async updateProjectById(
+		id: string,
+		workspaceId: number,
+		values: Partial<ProjectEntity>,
+	) {
 		const [updatedProject] = await db
 			.update(projectTable)
 			.set(values)
-			.where(eq(projectTable.id, id))
+			.where(
+				and(
+					eq(projectTable.id, id),
+					eq(projectTable.workspaceId, workspaceId),
+				),
+			)
 			.returning();
 
 		return updatedProject;

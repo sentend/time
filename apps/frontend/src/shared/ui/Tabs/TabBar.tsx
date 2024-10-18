@@ -2,7 +2,7 @@ import { Separator, Tabs, TabsContent, TabsList } from "@/shared/ui";
 import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 
 type Content = {
 	value: string;
