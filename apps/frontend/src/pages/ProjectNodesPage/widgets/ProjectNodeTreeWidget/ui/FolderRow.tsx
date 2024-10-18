@@ -4,10 +4,10 @@ import { FolderIcon } from "lucide-react";
 
 import { Text } from "@/shared/ui";
 import { TNode } from "~types/models";
-import { config } from "@/shared/config";
+import { COLORS } from "@/shared/config";
 import { IconArrowRight } from "@/shared/assets";
 import { DurationDisplay } from "@/entities/node";
-import { cn, highlitedSubstring } from "@/shared/utils";
+import { cn, highlitedSubstring } from "@/shared/libs";
 
 import { TNodeExtended } from "../constants";
 
@@ -54,7 +54,7 @@ const FolderRow = ({
 			<FolderIcon
 				width={26}
 				height={26}
-				className={cn("", config.colors[folder.effectiveColorId]?.fill)}
+				className={cn("", COLORS.colors[folder.effectiveColorId]?.fill)}
 			/>
 
 			<Text truncate variant="subtle" asChild className={cn("min-w-0 flex-[1] font-semibold")}>

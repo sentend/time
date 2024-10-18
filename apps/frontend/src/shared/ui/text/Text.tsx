@@ -1,7 +1,7 @@
 import { VariantProps, cva } from "class-variance-authority";
 import { HTMLAttributes, forwardRef } from "react";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { Slot } from "@radix-ui/react-slot";
 
 export const textVariants = cva("", {

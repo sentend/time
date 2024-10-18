@@ -6,7 +6,7 @@ import { useState } from "react";
 import { NodeType, NodeTypes, TNodeExtended } from "./constants";
 import { TNode, TTask } from "~types/models";
 import { useDrop } from "react-dnd";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "~types/supportTypes";
 import NodeTree from "./ui/NodeTree";

@@ -1,15 +1,14 @@
 import type { Context } from "hono";
-import { projectService, type ProjectService } from "./project.service";
+import { projectService, type IProjectService } from "./project.service";
 import { sendResult } from "@/libs/sendResult";
+import type { ProjectDTO } from "./project.dto";
 
 export class ProjectController {
-	constructor(private projectService: ProjectService) {}
+	constructor(private projectService: IProjectService) {}
 
 	async createProject(ctx: Context) {
 		const { currentUser, currentWorkspace } = ctx.__internalState;
 		const body = await ctx.req.json();
-
-		console.log("create project body", body);
 
 		const newProject = await this.projectService.createProject({
 			body,
@@ -21,8 +20,8 @@ export class ProjectController {
 	}
 
 	async getAllProjectsInWorkspace(ctx: Context) {
-		console.log(ctx.req.query());
-		const {} = ctx.req.query();
+		const { size, page } = ctx.req.query();
+
 		const workspaceId = Number(ctx.req.param("workspaceId"));
 		const projects = await this.projectService.getAllProjectsInWorkspace(
 			workspaceId,
@@ -34,9 +33,33 @@ export class ProjectController {
 
 	async getProject(ctx: Context) {
 		const { req, res } = ctx;
+
+		const workspaceId = Number(req.param("workspaceId"));
+		const projectId = req.param("projectId");
+
+		const project = await this.projectService.getProjectByIdInWorkspace(
+			projectId,
+			workspaceId,
+		);
+
+		return sendResult(ctx, project);
 	}
 
-	updateProject(ctx: Context) {}
+	async updateProject(ctx: Context) {
+		const { req, res } = ctx;
+
+		const workspaceId = Number(req.param("workspaceId"));
+		const projectId = req.param("projectId");
+		const data = await req.json<Partial<ProjectDTO>>();
+
+		const updatedProject = await this.projectService.updateProjectById(
+			projectId,
+			workspaceId,
+			data,
+		);
+
+		return sendResult(ctx, updatedProject);
+	}
 
 	deleteProject(ctx: Context) {}
 }

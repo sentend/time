@@ -1,2 +1,2 @@
-export * from "./Form.tsx";
-export * from "./form-fields/index";
+export * from "./form";
+export * from "./form-fields";

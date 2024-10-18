@@ -4,7 +4,7 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"~types/*": ["../../types/*"],
-			"@/server/*": ["../server/src/domains/*"]
+			"server/*": ["../server/src/domains/*"]
 		},
 		"esModuleInterop": true,
 		"target": "ES2022",

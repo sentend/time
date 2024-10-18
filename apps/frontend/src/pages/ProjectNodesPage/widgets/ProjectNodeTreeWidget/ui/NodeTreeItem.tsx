@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useDrag, useDrop } from "react-dnd";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { TNode, TTask } from "~types/models";
 import { NodeDropDown } from "@/entities/node";
 import { Nullable } from "~types/supportTypes";

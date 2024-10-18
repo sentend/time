@@ -10,7 +10,7 @@ import {
 	timestamp,
 	uuid,
 } from "drizzle-orm/pg-core";
-import { projectTable, type Project } from "../project/project.entity";
+import { projectTable, type ProjectEntity } from "../project/project.entity";
 import type { Nullable } from "~types/supportTypes";
 
 export enum NodeType {
@@ -57,5 +57,5 @@ export const nodeRelations = relations(nodeTable, ({ one }) => ({
 
 export type Node = InferSelectModel<typeof nodeTable> & {
 	parent?: Nullable<Node>;
-	project?: Project;
+	project?: ProjectEntity;
 };

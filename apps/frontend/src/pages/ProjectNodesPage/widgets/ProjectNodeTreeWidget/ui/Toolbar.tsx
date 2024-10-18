@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { useKeyboard } from "@/shared/hooks";
 import { IconArrowRight, NewFolderIcon } from "@/shared/assets";
 import {

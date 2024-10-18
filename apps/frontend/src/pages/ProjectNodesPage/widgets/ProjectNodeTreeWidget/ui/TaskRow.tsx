@@ -4,8 +4,8 @@ import { Text } from "@/shared/ui";
 import { TNode, TTask } from "~types/models";
 import { IconCompleted } from "@/shared/assets";
 import { DurationDisplay } from "@/entities/node";
-import { cn, highlitedSubstring } from "@/shared/utils";
-import StartPauseButton from "@/shared/ui/StaretPauseButton/StartPauseButton";
+import { cn, highlitedSubstring } from "@/shared/libs";
+import StartPauseButton from "@/shared/ui/start-pause-button/StartPauseButton";
 
 import { TTaskExtended } from "../constants";
 

@@ -10,6 +10,11 @@ projectsRouter.get("/", ctx =>
 
 projectsRouter.post("/", ctx => projectController.createProject(ctx));
 
+projectsRouter.get("/:projectId", ctx => projectController.getProject(ctx));
+
+projectsRouter.patch("/:projectId", ctx =>
+	projectController.updateProject(ctx),
+);
 // projectRouter.get("/projects", async (req: Request, res: Response) => {
 // 	const filter: GetProjectsFilter = {
 // 		isArchived: parseQSToBoolean(req.query.isArchived),

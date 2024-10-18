@@ -16,7 +16,7 @@ type Meta = {
 export const sendResult = (
 	ctx: Context,
 	data: unknown,
-	{ headers, count, status }: Meta = {},
+	{ headers = {}, count, status }: Meta = {},
 ) => {
 	const json: Data = { status: 1, data };
 
@@ -26,7 +26,7 @@ export const sendResult = (
 		json.count = data.length;
 	}
 
-	const sendingStatus = 200 || status;
-
+	const sendingStatus = status || 200;
+	console.log("headers", headers);
 	return ctx.json({ ...json }, sendingStatus, { ...headers });
 };

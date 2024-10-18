@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Avatar } from "@/shared/ui";
+import { Avatar } from "@/shared/ui/avatar";
 
 import { useTranslation } from "react-i18next";
 import { GetProjectService } from "~types/services";

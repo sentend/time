@@ -6,7 +6,7 @@ import { en } from "./locales/en";
 export const defaultNS = "translation";
 
 export const resources = {
-	en
+	en,
 } as const;
 
 export default i18next.use(initReactI18next).init({
@@ -14,5 +14,8 @@ export default i18next.use(initReactI18next).init({
 	debug: true,
 	fallbackLng: "en",
 	defaultNS,
-	resources
+	resources,
+	react: {
+		useSuspense: true,
+	},
 });

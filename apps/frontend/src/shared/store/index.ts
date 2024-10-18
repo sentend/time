@@ -1,1 +1,1 @@
-export { useAppStore } from "./appStore";
+export { $isInitDataLoaded, $isInitialized } from "./config-store";

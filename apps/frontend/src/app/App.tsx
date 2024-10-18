@@ -1,30 +1,17 @@
-import { RouterProvider } from "react-router";
-import { createBrowserRouter } from "react-router-dom";
-import { getPrivateRoutes, getPublicRoutes, getRoutes } from "./routes";
-import "./styles/index.scss";
-import { apiClient } from "@/shared/api";
-import { useAtomValue } from "jotai";
-import { currentUserAtom, currentWorkspaceAtom, isAppDataLoadingAtom } from "@/shared/config";
+import { useUnit } from "effector-react";
+import { Router } from "./router";
+import { $isInitDataLoaded, $isInitialized } from "@/shared/store";
 
 export const App = () => {
-	const currentUser = useAtomValue(currentUserAtom);
-	const currentWorkspace = useAtomValue(currentWorkspaceAtom);
-	console.log("APP");
-	console.log(currentUser, currentWorkspace);
-	const isLoading = useAtomValue(isAppDataLoadingAtom);
+	const [isInitDataLoaded, isInitialized] = useUnit([$isInitDataLoaded, $isInitialized]);
 
-	if (isLoading) {
-		return "loading...";
+	if (!isInitDataLoaded && !isInitialized) {
+		return "Loading...";
 	}
 
-	let mainRoutes = getPublicRoutes();
-	if (currentUser && currentWorkspace) {
-		mainRoutes = getPrivateRoutes();
-	}
-	const effectiveRoutes = getRoutes(mainRoutes);
-	const router = createBrowserRouter(effectiveRoutes);
-
-	return <RouterProvider router={router} />;
+	return (
+		<div className="text-base bg-main text-primary">
+			<Router />
+		</div>
+	);
 };
-
-import.meta.env.DEV ? (window.api = apiClient) : undefined;

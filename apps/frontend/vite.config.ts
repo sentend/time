@@ -7,8 +7,6 @@ const port = Number(process.env.VITE_CLIENT_PORT) || 3030;
 const host = process.env.VITE_CLIENT_HOST || "localhost";
 const serverTraget = process.env.VITE_SERVER_API_URL || "http://localhost:3000";
 
-console.log(__dirname);
-
 export default ({ mode }) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 

@@ -1,11 +1,11 @@
 import pick from "lodash/pick";
 
 import { GetProjectService } from "~types/services";
-import { Project } from "../project.entity";
+import { ProjectEntity } from "../project.entity";
 import { TCLient, TMember, TProject } from "~types/models";
 import { Nullable } from "~types/supportTypes";
 
-const toTProject = (project: Project): TProject => {
+const toTProject = (project: ProjectEntity): TProject => {
 	const modifiedMembers = project.members!.map(member => {
 		return {
 			...pick(member!.user, ["id", "initials", "name"]),

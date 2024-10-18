@@ -1,4 +1,4 @@
-import { apiClient } from "../api/apiClient.ts";
+import { apiClient } from "../api/api-client.ts";
 import "@tanstack/react-table";
 
 declare global {

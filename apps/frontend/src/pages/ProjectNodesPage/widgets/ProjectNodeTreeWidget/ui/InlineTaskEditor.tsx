@@ -1,6 +1,6 @@
 import { useKeyboard } from "@/shared/hooks";
 import { InputField } from "@/shared/ui";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/libs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
